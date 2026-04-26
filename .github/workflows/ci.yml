@@ -1,0 +1,5 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  foundry:
+    uses: sarthakagrawal927/saas-maker/.github/workflows/foundry-ci.yml@v1
