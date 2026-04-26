@@ -1,14 +1,14 @@
 import type { NextConfig } from "next";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
+// Wires the local Next.js dev server to Cloudflare bindings (D1, etc.)
+// from wrangler.toml so `pnpm dev` hits the local D1.
+initOpenNextCloudflareForDev();
 
 const nextConfig: NextConfig = {
   devIndicators: false,
   typedRoutes: false,
-  serverExternalPackages: [
-    "@libsql/client",
-    "@libsql/hrana-client",
-    "@libsql/isomorphic-ws",
-    "drizzle-orm",
-  ],
+  images: { unoptimized: true },
 };
 
 export default nextConfig;

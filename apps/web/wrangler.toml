@@ -1,0 +1,11 @@
+name = "everythingrated"
+main = ".open-next/worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+assets = { directory = ".open-next/assets", binding = "ASSETS" }
+
+[[d1_databases]]
+binding = "DB"
+database_name = "everythingrated-db"
+database_id = "0465c98f-b920-478d-a689-94c862693a7b"
+migrations_dir = "../../packages/db/migrations"
