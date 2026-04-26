@@ -1,0 +1,37 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# build
+.next/
+dist/
+build/
+out/
+.turbo/
+.open-next/
+.wrangler/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# db
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+local.db
+
+# test
+coverage/
+test-results/
+playwright-report/
+.vitest-cache/
+
+# os / editor
+.DS_Store
+.vscode/
+.idea/
+*.log
+.vercel
