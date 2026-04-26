@@ -1,8 +1,28 @@
 # Plan 0002 — EverythingRated consumes high-signal
 
-**Status:** ready (next iteration after v0 POC scaffold)
+**Status:** **DEFERRED** (2026-04-26) — design retained for future revisit, not the next iteration.
 **Created:** 2026-04-26
 **Parallel:** see `0001-time-evolving-ratings.md` for user-rating time bucketing — this plan inherits its window definitions.
+
+## Why deferred
+
+After picking Option B I challenged the premise. Conclusion: integrating with high-signal now is overconnection for a v0 POC.
+
+- **Reuse is shallow.** Net real reuse from high-signal = Reddit adapter + HN adapter + Modal cron (~2.5 days saved). FinBERT is wrong for dev-tool slang (noted in §"Diff inside high-signal" item 6), the entity gazetteer is different, signal cards and the hit-rate ledger are out of scope.
+- **Coupling is forever.** Every change to `entities.{collection,slug}` or `events.{sentimentLabel,sentimentScore,intent}` in high-signal becomes a breaking change for this repo. EverythingRated's prod-readiness now depends on high-signal's, and high-signal's own README says "research artifact first, product later, if at all".
+- **Option B is worst-of-both.** It rejects Option C (shared `signal-engine` package) as YAGNI on the basis that only one consumer exists. But with one consumer, the right answer is *no cross-repo wiring at all* — either Option C when a third consumer appears, or EverythingRated grows ~50 lines of its own Reddit polling and skips cross-service entirely.
+- **Wrong v0 question.** EverythingRated v0 is testing whether multi-axis ratings + time-evolution feels right. External sentiment is nice-to-have, not the question being answered. Plan `0001-time-evolving-ratings.md` is what matters now.
+
+**Trigger to revisit:**
+1. EverythingRated rating UX is validated against real users (≥ 50 raters across ≥ 5 items, signal that the multi-axis frame is the right frame), AND
+2. high-signal has shipped its own AI-infra wedge to a state the owner would call "production reliable", AND
+3. A third consumer of signal data has appeared (or is concretely planned), making Option C reuse genuinely justified.
+
+If only (1) and (2) are true, prefer EverythingRated growing ~50 lines of standalone Reddit/HN polling over re-opening this plan. If all three are true, **revisit Option C, not Option B** — the analysis below was written assuming B, and the producer-side commitments in `high-signal/plans/0003-multi-collection-for-everythingrated.md` are also deferred and may need to be reframed entirely.
+
+The design below is preserved verbatim because the API contract, intent taxonomy, caching strategy, and entity-resolution scheme remain useful regardless of whether the eventual integration is B or C.
+
+---
 
 ## Problem statement
 
