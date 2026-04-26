@@ -10,6 +10,7 @@ out/
 .turbo/
 .open-next/
 .wrangler/
+*.tsbuildinfo
 
 # env
 .env
