@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EverythingRated | Premium Review</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Manrope:wght@200..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#5727a6",
+                    "on-secondary-container": "#605080",
+                    "outline": "#7b7484",
+                    "surface-bright": "#fef7ff",
+                    "surface-container-high": "#ede6f1",
+                    "surface": "#fef7ff",
+                    "surface-container-lowest": "#ffffff",
+                    "primary": "#4f1c9e",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#f3ebf7",
+                    "primary-container": "#673ab7",
+                    "primary-fixed": "#ebddff",
+                    "on-tertiary-fixed-variant": "#6a3b00",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#4a4453",
+                    "surface-dim": "#dfd7e3",
+                    "inverse-surface": "#322f37",
+                    "tertiary": "#5f3500",
+                    "on-secondary-fixed": "#22123f",
+                    "on-secondary-fixed-variant": "#4e3e6d",
+                    "outline-variant": "#ccc3d5",
+                    "background": "#fef7ff",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#ffdcbf",
+                    "surface-variant": "#e7e0eb",
+                    "error": "#ba1a1a",
+                    "on-surface": "#1d1a22",
+                    "surface-container-highest": "#e7e0eb",
+                    "secondary-fixed-dim": "#d1bdf5",
+                    "on-primary-container": "#d8c2ff",
+                    "tertiary-fixed-dim": "#ffb872",
+                    "secondary-fixed": "#ebddff",
+                    "inverse-on-surface": "#f6eef9",
+                    "on-tertiary-fixed": "#2d1600",
+                    "secondary-container": "#dac5fe",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#6f43c0",
+                    "secondary": "#675687",
+                    "surface-container-low": "#f9f1fc",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#250059",
+                    "inverse-primary": "#d3bbff",
+                    "on-background": "#1d1a22",
+                    "tertiary-container": "#804900",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#ffbf83",
+                    "primary-fixed-dim": "#d3bbff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "8px",
+                    "lg": "12px",
+                    "xl": "16px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader", "serif"],
+                    "display": ["Newsreader", "serif"],
+                    "body": ["Manrope", "sans-serif"],
+                    "label": ["Manrope", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .drop-cap::first-letter {
+            float: left;
+            font-size: 5rem;
+            line-height: 1;
+            padding-right: 0.75rem;
+            font-family: 'Newsreader';
+            font-style: italic;
+            font-weight: 800;
+            color: #4f1c9e;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopAppBar Section -->
+<header class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl docked full-width top-0 sticky z-50 flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-4">
+<button class="text-violet-900 dark:text-violet-400 hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-['Newsreader'] italic font-black text-violet-900 dark:text-violet-100 text-3xl tracking-tight">EverythingRated</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-violet-700 dark:text-violet-300 font-['Manrope'] font-bold uppercase tracking-widest text-[10px]" href="#">Curated</a>
+<a class="text-slate-500 dark:text-slate-400 font-['Manrope'] font-bold uppercase tracking-widest text-[10px] hover:opacity-80" href="#">Trending</a>
+<a class="text-slate-500 dark:text-slate-400 font-['Manrope'] font-bold uppercase tracking-widest text-[10px] hover:opacity-80" href="#">Rankings</a>
+</nav>
+<button class="text-violet-900 dark:text-violet-400 hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 md:px-8 py-12">
+<!-- Hero Section: Premium Product Showcase -->
+<section class="relative grid grid-cols-1 lg:grid-cols-12 gap-12 items-end mb-24">
+<div class="lg:col-span-8 relative">
+<div class="aspect-[4/3] w-full rounded-xl overflow-hidden bg-surface-container-high group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close-up of a premium full-frame mirrorless camera lens with elegant reflections and dark professional studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaDEK_uyuZeql8p47odxCmp-jl4O2W2pgCRyYwNEt4NpnUncovzPczyEt8enZ7Ri_3GJB9zSMz6s1dFNhMu_n9ZDzGuj1Y9By4aXhsjXPWAvCRRVVkEpe-AOZaN-4Tu5U3B0yIJOKjCw_HJ6kk-BCKlzpxCl9DMUDP90IyA9hVrQZEZAGGvpT96b8_7BQ26Gi-6rcbDQdS24KcLQctEaRRw1WT0SUdznoC1mYbn7Mv5VsVa5wHAurWv_hsqYppPbdhjSeg_olBl9o"/>
+</div>
+<!-- Universal Score Component -->
+<div class="absolute -bottom-10 -right-4 md:right-12 bg-white/80 backdrop-blur-2xl p-8 md:p-12 rounded-xl shadow-[0_12px_40px_rgba(74,68,83,0.06)] flex flex-col items-center">
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-2">Universal Score</span>
+<span class="font-display text-8xl md:text-9xl font-black italic text-primary leading-none">94</span>
+<div class="w-full h-1 bg-surface-variant mt-6 rounded-full overflow-hidden">
+<div class="h-full w-[94%] bg-gradient-to-r from-primary to-primary-container"></div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 pb-12 lg:pb-0">
+<nav class="flex gap-2 mb-6">
+<span class="px-3 py-1 bg-primary-fixed text-on-primary-fixed text-[10px] font-bold uppercase tracking-widest rounded">Hardware</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase tracking-widest rounded">Mirrorless</span>
+</nav>
+<h2 class="font-display text-5xl md:text-7xl font-bold leading-[0.95] tracking-tighter mb-6">Lumina Pro Mark IV</h2>
+<p class="font-body text-lg text-on-surface-variant leading-relaxed opacity-80">The definitive tool for the modern digital curator. A masterpiece of optical engineering and tactile precision.</p>
+</div>
+</section>
+<!-- Section 2: The Verdict -->
+<section class="mb-32">
+<div class="bg-surface-container-low rounded-xl p-12 md:p-20">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-12">
+<div class="max-w-md">
+<h3 class="font-display text-4xl font-bold italic mb-4">The Verdict</h3>
+<p class="font-body text-on-surface-variant">We cross-reference thousands of data points to bring you the singular truth between expert precision and community passion.</p>
+</div>
+<div class="flex flex-wrap gap-12 md:gap-24">
+<div class="flex flex-col items-center gap-4">
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-variant" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364" stroke-dashoffset="36.4" stroke-width="8"></circle>
+</svg>
+<span class="absolute font-display text-3xl font-bold">90</span>
+</div>
+<span class="font-label text-[10px] uppercase tracking-widest font-bold">Expert Critics</span>
+</div>
+<div class="flex flex-col items-center gap-4">
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-variant" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary-container" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364" stroke-dashoffset="14.5" stroke-width="8"></circle>
+</svg>
+<span class="absolute font-display text-3xl font-bold">96</span>
+</div>
+<span class="font-label text-[10px] uppercase tracking-widest font-bold">Community</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Key Takeaways (Asymmetric Grid) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 mb-32 items-start">
+<div class="space-y-12">
+<h4 class="font-label text-xs uppercase tracking-[0.3em] text-on-surface-variant border-l-4 border-primary pl-4">The Strengths</h4>
+<ul class="space-y-8">
+<li class="flex gap-6 items-start">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle">check_circle</span>
+<div>
+<h5 class="font-label font-bold text-lg">Unrivaled Dynamic Range</h5>
+<p class="text-on-surface-variant text-sm mt-1">Recovers shadows with zero noise artifacting even at ISO 6400.</p>
+</div>
+</li>
+<li class="flex gap-6 items-start">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle">check_circle</span>
+<div>
+<h5 class="font-label font-bold text-lg">Tactile Dial Feedback</h5>
+<p class="text-on-surface-variant text-sm mt-1">Every click is weighted to feel like a high-end Swiss timepiece.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="space-y-12 md:mt-24">
+<h4 class="font-label text-xs uppercase tracking-[0.3em] text-on-surface-variant border-l-4 border-outline-variant pl-4">The Compromises</h4>
+<ul class="space-y-8">
+<li class="flex gap-6 items-start">
+<span class="material-symbols-outlined text-outline" data-icon="remove_circle">remove_circle</span>
+<div>
+<h5 class="font-label font-bold text-lg">Thermal Constraints</h5>
+<p class="text-on-surface-variant text-sm mt-1">4K/120fps recording can cause overheating after 20 minutes.</p>
+</div>
+</li>
+<li class="flex gap-6 items-start">
+<span class="material-symbols-outlined text-outline" data-icon="remove_circle">remove_circle</span>
+<div>
+<h5 class="font-label font-bold text-lg">Weight Distribution</h5>
+<p class="text-on-surface-variant text-sm mt-1">Slightly front-heavy when paired with the 85mm prime lens.</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<!-- Section 4: Curated Critique -->
+<section class="max-w-3xl mx-auto mb-32">
+<div class="text-center mb-16">
+<span class="font-label text-[10px] uppercase tracking-widest text-primary font-black mb-4 block">Editorial Review</span>
+<h3 class="font-display text-5xl font-bold italic">The Soul of the Machine</h3>
+<div class="flex justify-center items-center gap-3 mt-6">
+<div class="w-10 h-10 rounded-full bg-surface-dim overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Black and white minimalist portrait of a professional photography critic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0j-DhJMNWRW4-5jlDZ_7xq_kz1m_4G0gNOaHwKbMYHgtr5ITIaxiRnEjzdEENJJACsOo-jCwadprR7YcoFrJE3OqH3Tc34tOrcXMnEQPIprK7qXHlfRz2dH92vfHmSwjFMsr8YFgxrFq-kpFGBP3p9zPvEYiujOPeLIVjsKv-GTKV0GR71qshebBU7QLhUR1iogpCrsQRvgZXPjSSpUIOF2Xwh7NhHZTyF18fXaSsUfGypzV1ydy3MLT4bgo2lhjiEWHvtQAA-VE"/>
+</div>
+<span class="font-label text-sm font-bold">Julian Vane</span>
+<span class="text-on-surface-variant opacity-40">•</span>
+<span class="font-label text-sm text-on-surface-variant">October 12, 2024</span>
+</div>
+</div>
+<div class="font-display text-xl leading-[1.8] text-on-surface drop-cap space-y-8 italic text-justify">
+<p>Great design often whispers where others scream. The Lumina Pro Mark IV isn't just a collection of silicon and glass; it's a testament to the belief that photography is a meditative act. From the moment the magnesium alloy body hits your palm, you realize that the engineers at Lumina weren't just chasing megapixels—they were chasing a feeling.</p>
+<p>The sensor performance is, quite frankly, witchcraft. In our low-light tests, the Mark IV captured nuances in the shadows of a dim jazz club that even the human eye struggled to register. The color science leans toward a gentle, cinematic warmth that feels organic rather than digital. It's the first digital camera I've used that doesn't feel like it's trying to simulate film, but rather, has moved beyond the need for comparison entirely.</p>
+</div>
+<div class="mt-16 bg-surface-container-low p-8 rounded-xl flex gap-8 items-center">
+<div class="text-4xl font-display font-black text-primary">“</div>
+<p class="font-display text-2xl font-bold italic leading-relaxed text-on-surface-variant">The Lumina Mark IV is less of a camera and more of a visual extension of the nervous system.</p>
+</div>
+</section>
+<!-- Section 5: Community Feedback -->
+<section class="mb-32">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h3 class="font-display text-4xl font-bold mb-2">Community Voices</h3>
+<p class="font-label text-sm text-on-surface-variant uppercase tracking-widest">342 Global Reviews</p>
+</div>
+<button class="bg-primary text-white font-label text-xs font-bold uppercase tracking-widest px-6 py-3 rounded hover:opacity-90 transition-all">Write A Review</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- User Review Card 1 -->
+<div class="bg-white p-8 rounded-xl shadow-[0_4px_20px_rgba(74,68,83,0.03)] border-b-4 border-primary/10">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center font-bold text-primary text-xs">EL</div>
+<div>
+<h6 class="font-label font-bold text-sm">Elena Laurent</h6>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Verified Owner</span>
+</div>
+</div>
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body text-sm leading-relaxed text-on-surface-variant italic">"The autofocus is like it can read my mind. I've used every major brand and nothing sticks to the eye like the Mark IV. It's heavy, yes, but it feels like it will last a century."</p>
+<div class="mt-6 pt-6 border-t border-surface-variant flex justify-between items-center text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
+<span>2 days ago</span>
+<div class="flex gap-4">
+<button class="hover:text-primary flex items-center gap-1"><span class="material-symbols-outlined text-sm">thumb_up</span> 42</button>
+</div>
+</div>
+</div>
+<!-- User Review Card 2 -->
+<div class="bg-white p-8 rounded-xl shadow-[0_4px_20px_rgba(74,68,83,0.03)] border-b-4 border-primary/10">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center font-bold text-on-secondary-container text-xs">MK</div>
+<div>
+<h6 class="font-label font-bold text-sm">Marcus K.</h6>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Professional User</span>
+</div>
+</div>
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm">star_half</span>
+</div>
+</div>
+<p class="font-body text-sm leading-relaxed text-on-surface-variant italic">"Incredible optics. Docked half a star only for the menu system, which is a bit of a labyrinth. But once you set your custom buttons, it's pure bliss."</p>
+<div class="mt-6 pt-6 border-t border-surface-variant flex justify-between items-center text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
+<span>1 week ago</span>
+<div class="flex gap-4">
+<button class="hover:text-primary flex items-center gap-1"><span class="material-symbols-outlined text-sm">thumb_up</span> 18</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Section -->
+<footer class="bg-slate-50 dark:bg-slate-900 w-full rounded-t-3xl flex flex-col gap-8 px-8 py-12 pb-32 w-full">
+<div class="flex flex-col md:flex-row justify-between items-start gap-12">
+<div>
+<h4 class="font-['Newsreader'] italic font-bold text-xl text-violet-900 dark:text-violet-400 mb-4">EverythingRated</h4>
+<p class="font-['Manrope'] text-sm leading-relaxed text-slate-500 max-w-xs">Curating the world's finest across tech, film, and lifestyle through data-driven critique and aesthetic appreciation.</p>
+</div>
+<div class="grid grid-cols-2 gap-x-12 gap-y-4">
+<a class="text-slate-500 hover:text-violet-600 font-['Manrope'] text-sm leading-relaxed transition-colors cursor-pointer" href="#">Ethics Policy</a>
+<a class="text-slate-500 hover:text-violet-600 font-['Manrope'] text-sm leading-relaxed transition-colors cursor-pointer underline decoration-violet-500 underline-offset-4" href="#">The Scoring System</a>
+<a class="text-slate-500 hover:text-violet-600 font-['Manrope'] text-sm leading-relaxed transition-colors cursor-pointer" href="#">Archive</a>
+<a class="text-slate-500 hover:text-violet-600 font-['Manrope'] text-sm leading-relaxed transition-colors cursor-pointer" href="#">Contact</a>
+</div>
+</div>
+<div class="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-['Manrope'] text-sm leading-relaxed text-slate-500">© 2024 EverythingRated. The Definitive Verdict.</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-violet-600" data-icon="public">public</span>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-violet-600" data-icon="share">share</span>
+</div>
+</div>
+</footer>
+<!-- BottomNavBar Section (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl z-50 shadow-[0_-8px_30px_rgb(0,0,0,0.04)] border-t border-slate-100/10">
+<div class="flex flex-col items-center justify-center text-violet-700 dark:text-violet-300 bg-violet-50/50 dark:bg-violet-900/20 rounded-xl px-4 py-1 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-['Manrope'] font-bold uppercase tracking-widest text-[10px]">Curated</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-1 hover:text-violet-600 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-['Manrope'] font-bold uppercase tracking-widest text-[10px]">Trending</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-1 hover:text-violet-600 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="format_list_numbered">format_list_numbered</span>
+<span class="font-['Manrope'] font-bold uppercase tracking-widest text-[10px]">Rankings</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-1 hover:text-violet-600 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Manrope'] font-bold uppercase tracking-widest text-[10px]">Profile</span>
+</div>
+</nav>
+</body></html>
