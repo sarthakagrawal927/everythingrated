@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { cn } from "@/lib/cn";
 import { ScoreBar } from "@/components/atoms/score-bar";
 import type { AspectAverage } from "@/lib/ratings";
-import { submitRating } from "@/app/[slug]/actions";
+import { submitRating } from "@/lib/actions";
 
 /**
  * Interactive rating row — 5 buttons, optimistic update, calls a Server Action.
@@ -13,10 +13,12 @@ import { submitRating } from "@/app/[slug]/actions";
 export function RateRow({
   itemId,
   itemSlug,
+  directorySlug,
   initial,
 }: {
   itemId: string;
   itemSlug: string;
+  directorySlug: string;
   initial: AspectAverage;
 }) {
   const [your, setYour] = useState<number | null>(initial.yourScore);
@@ -36,6 +38,7 @@ export function RateRow({
     setOptimisticCount(nextCount);
     startTransition(async () => {
       await submitRating({
+        directorySlug,
         itemSlug,
         itemId,
         aspectId: initial.aspect.id,

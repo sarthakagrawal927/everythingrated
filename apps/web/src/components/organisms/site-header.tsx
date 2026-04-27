@@ -12,7 +12,7 @@ export function SiteHeader() {
           <span>EverythingRated</span>
         </Link>
         <span className="hidden text-[12px] text-[var(--muted)] md:block">
-          Multi-axis ratings · POC: AI dev tools
+          Multi-axis ratings
         </span>
       </div>
     </header>

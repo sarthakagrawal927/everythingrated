@@ -10,21 +10,25 @@ export const dynamic = "force-dynamic";
 export default async function ItemPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ directory: string; item: string }>;
 }) {
-  const { slug } = await params;
+  const { directory: dirSlug, item: itemSlug } = await params;
   const visitorId = await readVisitorId();
-  const data = await getItemAggregate(slug, visitorId);
-  if (!data) notFound();
+  const result = await getItemAggregate(dirSlug, itemSlug, visitorId);
+  if (!result) notFound();
+  const { directory, data } = result;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-14">
-      <Link
-        href="/"
-        className="text-[12px] text-[var(--muted)] hover:text-[var(--foreground)]"
-      >
-        ← All tools
-      </Link>
+      <div className="flex items-center gap-2 text-[12px] text-[var(--muted)]">
+        <Link href="/" className="hover:text-[var(--foreground)]">
+          All directories
+        </Link>
+        <span>/</span>
+        <Link href={`/d/${directory.slug}`} className="hover:text-[var(--foreground)]">
+          {directory.name}
+        </Link>
+      </div>
 
       <header className="mt-6 flex flex-col items-start justify-between gap-6 border-b border-[var(--border)] pb-8 sm:flex-row sm:items-end">
         <div>
@@ -71,6 +75,7 @@ export default async function ItemPage({
               key={a.aspect.id}
               itemId={data.item.id}
               itemSlug={data.item.slug}
+              directorySlug={directory.slug}
               initial={a}
             />
           ))}

@@ -1,5 +1,13 @@
-import { items, aspects, ratings, type Aspect, type Item } from "@everythingrated/db";
-import { eq } from "drizzle-orm";
+import {
+  items,
+  aspects,
+  ratings,
+  directories,
+  type Aspect,
+  type Item,
+  type Directory,
+} from "@everythingrated/db";
+import { and, eq } from "drizzle-orm";
 import { getDb } from "./db";
 
 export type AspectAverage = {
@@ -16,39 +24,71 @@ export type ItemWithAggregate = {
   totalRaters: number; // distinct visitor ids across all aspects for this item
 };
 
-/** Load all aspects in display order. */
-export async function listAspects(): Promise<Aspect[]> {
+export type DirectorySummary = {
+  directory: Directory;
+  itemCount: number;
+  aspectCount: number;
+};
+
+/** Load all directories with item + aspect counts. */
+export async function listDirectories(): Promise<DirectorySummary[]> {
   const db = await getDb();
-  return db.select().from(aspects).orderBy(aspects.sortOrder);
+  const [allDirs, allItems, allAspects] = await Promise.all([
+    db.select().from(directories).orderBy(directories.sortOrder),
+    db.select({ directoryId: items.directoryId }).from(items),
+    db.select({ directoryId: aspects.directoryId }).from(aspects),
+  ]);
+
+  return allDirs.map((directory) => ({
+    directory,
+    itemCount: allItems.filter((i) => i.directoryId === directory.id).length,
+    aspectCount: allAspects.filter((a) => a.directoryId === directory.id).length,
+  }));
 }
 
-/** Aggregate every item with its per-aspect averages and the visitor's own scores. */
+/** Single directory by slug — null if not found. */
+export async function getDirectoryBySlug(slug: string): Promise<Directory | null> {
+  const db = await getDb();
+  const [dir] = await db.select().from(directories).where(eq(directories.slug, slug));
+  return dir ?? null;
+}
+
+/** Aggregate every item in a directory with per-aspect averages and the visitor's own scores. */
 export async function listItemsWithAggregates(
+  directoryId: string,
   visitorId: string | null,
 ): Promise<ItemWithAggregate[]> {
   const db = await getDb();
-  const [allItems, allAspects, allRatings] = await Promise.all([
-    db.select().from(items).orderBy(items.name),
-    db.select().from(aspects).orderBy(aspects.sortOrder),
-    db.select().from(ratings),
+  const [dirItems, dirAspects] = await Promise.all([
+    db.select().from(items).where(eq(items.directoryId, directoryId)).orderBy(items.name),
+    db.select().from(aspects).where(eq(aspects.directoryId, directoryId)).orderBy(aspects.sortOrder),
   ]);
+  if (dirItems.length === 0) return [];
+  const itemIds = new Set(dirItems.map((i) => i.id));
+  const allRatings = (await db.select().from(ratings)).filter((r) => itemIds.has(r.itemId));
 
-  return allItems.map((item) => buildAggregate(item, allAspects, allRatings, visitorId));
+  return dirItems.map((item) => buildAggregate(item, dirAspects, allRatings, visitorId));
 }
 
-/** Single item by slug — null if not found. */
+/** Single item by directory + slug — null if not found. */
 export async function getItemAggregate(
-  slug: string,
+  directorySlug: string,
+  itemSlug: string,
   visitorId: string | null,
-): Promise<ItemWithAggregate | null> {
+): Promise<{ directory: Directory; data: ItemWithAggregate } | null> {
   const db = await getDb();
-  const [item] = await db.select().from(items).where(eq(items.slug, slug));
+  const dir = await getDirectoryBySlug(directorySlug);
+  if (!dir) return null;
+  const [item] = await db
+    .select()
+    .from(items)
+    .where(and(eq(items.directoryId, dir.id), eq(items.slug, itemSlug)));
   if (!item) return null;
-  const [allAspects, itemRatings] = await Promise.all([
-    db.select().from(aspects).orderBy(aspects.sortOrder),
+  const [dirAspects, itemRatings] = await Promise.all([
+    db.select().from(aspects).where(eq(aspects.directoryId, dir.id)).orderBy(aspects.sortOrder),
     db.select().from(ratings).where(eq(ratings.itemId, item.id)),
   ]);
-  return buildAggregate(item, allAspects, itemRatings, visitorId);
+  return { directory: dir, data: buildAggregate(item, dirAspects, itemRatings, visitorId) };
 }
 
 /** Upsert a rating from the given visitor. Score is clamped to 1..5. */
@@ -79,13 +119,13 @@ export async function rate(opts: {
 
 function buildAggregate(
   item: Item,
-  allAspects: Aspect[],
+  dirAspects: Aspect[],
   allRatings: { itemId: string; aspectId: string; visitorId: string; score: number }[],
   visitorId: string | null,
 ): ItemWithAggregate {
   const itemRatings = allRatings.filter((r) => r.itemId === item.id);
 
-  const perAspect: AspectAverage[] = allAspects.map((aspect) => {
+  const perAspect: AspectAverage[] = dirAspects.map((aspect) => {
     const rs = itemRatings.filter((r) => r.aspectId === aspect.id);
     const avg = rs.length ? rs.reduce((s, r) => s + r.score, 0) / rs.length : 0;
     const yourScore =

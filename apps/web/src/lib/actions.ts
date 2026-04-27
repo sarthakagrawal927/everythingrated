@@ -5,6 +5,7 @@ import { rate } from "@/lib/ratings";
 import { ensureVisitorId } from "@/lib/visitor";
 
 export async function submitRating(input: {
+  directorySlug: string;
   itemSlug: string;
   itemId: string;
   aspectId: string;
@@ -17,6 +18,7 @@ export async function submitRating(input: {
     visitorId,
     score: input.score,
   });
-  revalidatePath(`/${input.itemSlug}`);
+  revalidatePath(`/d/${input.directorySlug}/${input.itemSlug}`);
+  revalidatePath(`/d/${input.directorySlug}`);
   revalidatePath("/");
 }

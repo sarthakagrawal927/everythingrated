@@ -4,9 +4,15 @@ import { Badge } from "@/components/atoms/badge";
 import { AspectRow } from "@/components/molecules/aspect-row";
 import type { ItemWithAggregate } from "@/lib/ratings";
 
-export function ItemCard({ data }: { data: ItemWithAggregate }) {
+export function ItemCard({
+  data,
+  directorySlug,
+}: {
+  data: ItemWithAggregate;
+  directorySlug: string;
+}) {
   return (
-    <Link href={`/${data.item.slug}`} className="group block">
+    <Link href={`/d/${directorySlug}/${data.item.slug}`} className="group block">
       <Card className="h-full transition-colors group-hover:border-[var(--border-strong)]">
         <CardBody className="flex h-full flex-col gap-4">
           <div className="flex items-start justify-between gap-3">
