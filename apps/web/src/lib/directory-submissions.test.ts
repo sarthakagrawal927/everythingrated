@@ -85,3 +85,25 @@ assert.equal(
   }).ok,
   true,
 );
+
+// Submitter email, when present, must look like an email.
+assert.equal(
+  validateDirectorySubmission({
+    name: "AI design tools",
+    description: "Design agents and creative tools for app builders.",
+    heroCopy: "Compare quality, cost, reliability, and workflow fit.",
+    aspectLabels: ["Quality", "Cost", "Reliability"],
+    submitterEmail: "not-an-email",
+  }).ok,
+  false,
+);
+assert.equal(
+  validateDirectorySubmission({
+    name: "AI design tools",
+    description: "Design agents and creative tools for app builders.",
+    heroCopy: "Compare quality, cost, reliability, and workflow fit.",
+    aspectLabels: ["Quality", "Cost", "Reliability"],
+    submitterEmail: "owner@example.com",
+  }).ok,
+  true,
+);

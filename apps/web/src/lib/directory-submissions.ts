@@ -10,6 +10,7 @@ import { getDb } from "./db";
 const MAX_TEXT_LENGTH = 500;
 const MAX_ASPECTS = 8;
 const MIN_ASPECTS = 3;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export type DirectorySubmissionStatus = "pending" | "approved" | "rejected";
 
@@ -75,6 +76,11 @@ export function validateDirectorySubmission(
   }
   if (aspectLabels.length < MIN_ASPECTS) {
     return { ok: false, error: "Suggest at least 3 distinct rating aspects." };
+  }
+
+  const submitterEmail = input.submitterEmail?.trim();
+  if (submitterEmail && !EMAIL_PATTERN.test(submitterEmail)) {
+    return { ok: false, error: "Submitter email looks malformed." };
   }
 
   return { ok: true };
