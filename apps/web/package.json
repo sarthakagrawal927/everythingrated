@@ -9,7 +9,8 @@
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "start": "next start",
     "lint": "echo 'lint: skipped (next lint deprecated in Next 16)'",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@everythingrated/db": "workspace:*",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20260424.1",
+    "@playwright/test": "1.59.1",
     "@saas-maker/eslint-config": "^1.0.2",
     "@saas-maker/tsconfig": "^1.0.0",
     "@tailwindcss/postcss": "4",

@@ -239,6 +239,20 @@ export async function getItemAggregate(
   return { directory: dir, data: buildAggregate(item, dirAspects, itemRatings, visitorId) };
 }
 
+/**
+ * Count how many ratings the given visitor has already submitted. Used by the
+ * analytics layer to decide whether a rating is the visitor's first (and so
+ * should also emit the `activated` event).
+ */
+export async function countVisitorRatings(visitorId: string): Promise<number> {
+  const db = await getDb();
+  const rows = await db
+    .select({ id: ratings.id })
+    .from(ratings)
+    .where(eq(ratings.visitorId, visitorId));
+  return rows.length;
+}
+
 /** Upsert a rating from the given visitor. Score is clamped to 1..5. */
 export async function rate(opts: {
   itemId: string;

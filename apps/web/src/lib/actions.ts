@@ -7,8 +7,9 @@ import {
   rejectDirectorySubmission,
   submitDirectorySuggestion,
 } from "@/lib/directory-submissions";
+import { trackActivated, trackCoreAction } from "@/lib/analytics";
 import { getModerationToken } from "@/lib/moderation";
-import { rate } from "@/lib/ratings";
+import { countVisitorRatings, rate } from "@/lib/ratings";
 import { ensureVisitorId } from "@/lib/visitor";
 
 export async function submitRating(input: {
@@ -19,12 +20,25 @@ export async function submitRating(input: {
   score: number;
 }) {
   const visitorId = await ensureVisitorId();
+
+  // Is this the visitor's first-ever rating? If so, the rating below also
+  // counts as `activated` (first real product value). Checked before the
+  // upsert so a re-rate of the same aspect doesn't re-trigger it.
+  const priorRatings = await countVisitorRatings(visitorId);
+
   await rate({
     itemId: input.itemId,
     aspectId: input.aspectId,
     visitorId,
     score: input.score,
   });
+
+  // Analytics — best-effort, never blocks the action.
+  if (priorRatings === 0) {
+    trackActivated(visitorId);
+  }
+  trackCoreAction("rating_submitted", visitorId);
+
   revalidatePath(`/d/${input.directorySlug}/${input.itemSlug}`);
   revalidatePath(`/d/${input.directorySlug}`);
   revalidatePath("/");
@@ -42,14 +56,26 @@ export async function submitDirectory(
   const aspects = formData
     .getAll("aspectLabels")
     .map((value) => String(value));
-  const result = await submitDirectorySuggestion({
-    name: String(formData.get("name") ?? ""),
-    description: String(formData.get("description") ?? ""),
-    heroCopy: String(formData.get("heroCopy") ?? ""),
-    aspectLabels: aspects,
-    submitterName: String(formData.get("submitterName") ?? ""),
-    submitterEmail: String(formData.get("submitterEmail") ?? ""),
-  });
+
+  let result;
+  try {
+    result = await submitDirectorySuggestion({
+      name: String(formData.get("name") ?? ""),
+      description: String(formData.get("description") ?? ""),
+      heroCopy: String(formData.get("heroCopy") ?? ""),
+      aspectLabels: aspects,
+      submitterName: String(formData.get("submitterName") ?? ""),
+      submitterEmail: String(formData.get("submitterEmail") ?? ""),
+    });
+  } catch (error) {
+    // A raw infra failure (e.g. D1 unavailable) — never blank the form.
+    console.error("submitDirectory failed", error);
+    return {
+      ok: false,
+      message:
+        "Something went wrong saving your submission. Please try again in a moment.",
+    };
+  }
 
   if (!result.ok) {
     return { ok: false, message: result.error };

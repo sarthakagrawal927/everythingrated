@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { trackSignup } from "./analytics";
 
 export const VISITOR_COOKIE = "er_visitor";
 const ONE_YEAR = 60 * 60 * 24 * 365;
@@ -28,5 +29,9 @@ export async function ensureVisitorId(): Promise<string> {
     path: "/",
     maxAge: ONE_YEAR,
   });
+  // Analytics — `signup`: a new visitor was identified (cookie minted). This
+  // is the anonymous-product equivalent of an account being created, and
+  // fires at most once per visitor (the cookie persists for a year).
+  trackSignup(id);
   return id;
 }
