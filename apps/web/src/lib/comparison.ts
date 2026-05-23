@@ -2,6 +2,8 @@ import type { AspectAverage, ItemWithAggregate } from "./ratings";
 
 export type WeightMap = Record<string, number>;
 
+export const MAX_COMPARE_ITEMS = 4;
+
 export type WeightedComparisonRow = {
   item: ItemWithAggregate["item"];
   total: number;
@@ -16,7 +18,7 @@ export function parseCompareState(searchParams: URLSearchParams): {
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean)
-    .slice(0, 5);
+    .slice(0, MAX_COMPARE_ITEMS);
 
   const weights: WeightMap = {};
   for (const part of (searchParams.get("w") ?? "").split(",")) {
@@ -30,7 +32,9 @@ export function parseCompareState(searchParams: URLSearchParams): {
 
 export function encodeCompareState(selectedIds: string[], weights: WeightMap): string {
   const params = new URLSearchParams();
-  if (selectedIds.length > 0) params.set("compare", selectedIds.slice(0, 5).join(","));
+  if (selectedIds.length > 0) {
+    params.set("compare", selectedIds.slice(0, MAX_COMPARE_ITEMS).join(","));
+  }
   const encodedWeights = Object.entries(weights)
     .filter(([, value]) => value !== 1)
     .map(([key, value]) => `${key}:${clampWeight(value)}`)

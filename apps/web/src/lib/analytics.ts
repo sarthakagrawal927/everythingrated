@@ -122,6 +122,29 @@ export function trackReturned(distinctId?: string): void {
   emit("returned", {}, distinctId);
 }
 
+/**
+ * Feature-level monitoring for the comparison shortlist. This intentionally
+ * sits outside the fixed funnel taxonomy above.
+ */
+export function trackCompareViewOpened({
+  directory,
+  itemCount,
+}: {
+  directory: string;
+  itemCount: number;
+}): void {
+  if (typeof window === "undefined") return;
+  try {
+    emitBrowser("compare_view_opened", {
+      project: PROJECT,
+      directory,
+      item_count: itemCount,
+    });
+  } catch {
+    // Analytics must never break comparison.
+  }
+}
+
 // --- Browser session gating for `returned` ---------------------------------
 //
 // The `er_visitor` cookie is httpOnly, so the client can't read it. Instead we

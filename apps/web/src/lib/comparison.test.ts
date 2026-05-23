@@ -63,11 +63,11 @@ const clampedParsed = parseCompareState(new URLSearchParams(clampedEncoded));
 assert.equal(clampedParsed.weights.speed, 5);
 assert.equal(clampedParsed.weights.polish, 0);
 
-// More than 5 selected IDs should truncate to the first 5.
+// More than 4 selected IDs should truncate to the first 4.
 const truncated = parseCompareState(
   new URLSearchParams("compare=a,b,c,d,e,f,g"),
 );
-assert.deepEqual(truncated.selectedIds, ["a", "b", "c", "d", "e"]);
+assert.deepEqual(truncated.selectedIds, ["a", "b", "c", "d"]);
 
 // Selecting an unknown id should drop it rather than throw.
 const unknown = compareItems(

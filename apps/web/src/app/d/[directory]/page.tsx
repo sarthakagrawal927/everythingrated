@@ -82,6 +82,7 @@ export default async function DirectoryPage({
 
       {items.length > 0 && (
         <ComparisonBoard
+          directorySlug={directory.slug}
           items={items}
           initialSelectedIds={compareState.selectedIds}
           initialWeights={compareState.weights}

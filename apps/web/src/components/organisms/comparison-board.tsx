@@ -1,26 +1,48 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { compareItems, encodeCompareState, type WeightMap } from "@/lib/comparison";
+import { trackCompareViewOpened } from "@/lib/analytics";
+import { compareItems, encodeCompareState, MAX_COMPARE_ITEMS, type WeightMap } from "@/lib/comparison";
 import type { ItemWithAggregate } from "@/lib/ratings";
 import { Card, CardBody } from "@/components/atoms/card";
 import { ScoreBar } from "@/components/atoms/score-bar";
 
 export function ComparisonBoard({
+  directorySlug,
   items,
   initialSelectedIds,
   initialWeights,
 }: {
+  directorySlug: string;
   items: ItemWithAggregate[];
   initialSelectedIds: string[];
   initialWeights: WeightMap;
 }) {
   const router = useRouter();
-  const [selectedIds, setSelectedIds] = useState<string[]>(initialSelectedIds);
+  const itemIds = useMemo(() => new Set(items.map((item) => item.item.id)), [items]);
+  const [selectedIds, setSelectedIds] = useState<string[]>(() =>
+    initialSelectedIds.filter((id) => itemIds.has(id)).slice(0, MAX_COMPARE_ITEMS),
+  );
   const [weights, setWeights] = useState<WeightMap>(initialWeights);
+  const trackedSelections = useRef<Set<string>>(new Set());
   const aspects = items[0]?.aspects.map((a) => a.aspect) ?? [];
   const rows = useMemo(() => compareItems(items, selectedIds, weights), [items, selectedIds, weights]);
+  const selectedItems = useMemo(
+    () => selectedIds
+      .map((id) => items.find((item) => item.item.id === id))
+      .filter((item): item is ItemWithAggregate => Boolean(item)),
+    [items, selectedIds],
+  );
+  const isAtMax = selectedIds.length >= MAX_COMPARE_ITEMS;
+
+  useEffect(() => {
+    if (rows.length < 2) return;
+    const key = rows.map((row) => row.item.id).sort().join(",");
+    if (trackedSelections.current.has(key)) return;
+    trackedSelections.current.add(key);
+    trackCompareViewOpened({ directory: directorySlug, itemCount: rows.length });
+  }, [directorySlug, rows]);
 
   function sync(nextSelectedIds: string[], nextWeights: WeightMap) {
     const query = encodeCompareState(nextSelectedIds, nextWeights);
@@ -30,9 +52,14 @@ export function ComparisonBoard({
   function toggleItem(id: string) {
     const next = selectedIds.includes(id)
       ? selectedIds.filter((selected) => selected !== id)
-      : [...selectedIds, id].slice(0, 5);
+      : [...selectedIds, id].slice(0, MAX_COMPARE_ITEMS);
     setSelectedIds(next);
     sync(next, weights);
+  }
+
+  function clearItems() {
+    setSelectedIds([]);
+    sync([], weights);
   }
 
   function setWeight(key: string, value: number) {
@@ -48,10 +75,23 @@ export function ComparisonBoard({
         <div>
           <h2 className="text-[20px] font-semibold tracking-tight">Comparison board</h2>
           <p className="mt-1 text-[13px] text-[var(--muted)]">
-            Select 2-5 items, tune the axis weights, and share the URL for this exact tradeoff.
+            Add 2-{MAX_COMPARE_ITEMS} items, tune the axis weights, and share the URL for this exact tradeoff.
           </p>
         </div>
-        <span className="text-[12px] text-[var(--muted)]">{selectedIds.length}/5 selected</span>
+        <div className="flex items-center gap-3">
+          {selectedIds.length > 0 && (
+            <button
+              type="button"
+              onClick={clearItems}
+              className="text-[12px] text-[var(--muted)] hover:text-[var(--foreground)]"
+            >
+              Clear
+            </button>
+          )}
+          <span className="text-[12px] text-[var(--muted)]">
+            {selectedIds.length}/{MAX_COMPARE_ITEMS} selected
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[320px_1fr]">
@@ -59,6 +99,29 @@ export function ComparisonBoard({
           <CardBody className="space-y-4">
             <div>
               <h3 className="text-[13px] font-semibold">Items</h3>
+              {selectedItems.length === 0 ? (
+                <p className="mt-2 text-[12px] text-[var(--muted)]">
+                  Your shortlist is empty. Add a few items below to compare.
+                </p>
+              ) : (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {selectedItems.map((item) => (
+                    <button
+                      key={item.item.id}
+                      type="button"
+                      onClick={() => toggleItem(item.item.id)}
+                      className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-[12px] text-[var(--foreground)] hover:border-[var(--border-strong)]"
+                    >
+                      {item.item.name} x
+                    </button>
+                  ))}
+                </div>
+              )}
+              {isAtMax && (
+                <p className="mt-2 text-[12px] text-[var(--muted)]">
+                  Shortlist full. Remove an item before adding another.
+                </p>
+              )}
               <div className="mt-3 space-y-2">
                 {items.map((item) => (
                   <label key={item.item.id} className="flex items-center gap-2 text-[13px]">
@@ -66,7 +129,7 @@ export function ComparisonBoard({
                       type="checkbox"
                       checked={selectedIds.includes(item.item.id)}
                       onChange={() => toggleItem(item.item.id)}
-                      disabled={!selectedIds.includes(item.item.id) && selectedIds.length >= 5}
+                      disabled={!selectedIds.includes(item.item.id) && isAtMax}
                     />
                     <span>{item.item.name}</span>
                   </label>
@@ -102,22 +165,35 @@ export function ComparisonBoard({
         <Card>
           <CardBody>
             {rows.length < 2 ? (
-              <p className="text-[13px] text-[var(--muted)]">Pick at least two items to compare.</p>
+              <div className="rounded-[var(--radius-sm)] border border-dashed border-[var(--border-strong)] p-6 text-center">
+                <p className="text-[13px] font-medium">
+                  {selectedIds.length === 0 ? "No items shortlisted yet." : "Add one more item to compare."}
+                </p>
+                <p className="mt-1 text-[12px] text-[var(--muted)]">
+                  Comparisons open once your temporary list has at least two items.
+                </p>
+              </div>
             ) : (
-              <div className="space-y-5">
+              <div
+                className="grid gap-3 overflow-x-auto"
+                style={{ gridTemplateColumns: `repeat(${rows.length}, minmax(180px, 1fr))` }}
+              >
                 {rows.map((row, index) => (
-                  <div key={row.item.id} className="border-b border-[var(--border)] pb-4 last:border-0 last:pb-0">
-                    <div className="mb-2 flex items-center justify-between gap-4">
-                      <div>
-                        <p className="text-[12px] uppercase tracking-[0.08em] text-[var(--muted)]">#{index + 1}</p>
+                  <div
+                    key={row.item.id}
+                    className="min-w-[180px] rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface-2)] p-4"
+                  >
+                    <div className="mb-4">
+                      <p className="text-[12px] uppercase tracking-[0.08em] text-[var(--muted)]">#{index + 1}</p>
+                      <div className="mt-1 flex items-start justify-between gap-3">
                         <h3 className="text-[16px] font-semibold">{row.item.name}</h3>
+                        <span className="num text-2xl font-semibold">{row.total.toFixed(1)}</span>
                       </div>
-                      <span className="num text-2xl font-semibold">{row.total.toFixed(1)}</span>
                     </div>
-                    <div className="grid gap-2 md:grid-cols-2">
+                    <div className="space-y-3">
                       {row.tradeoffs.map((tradeoff) => (
                         <div key={tradeoff.aspect.id}>
-                          <div className="mb-1 flex justify-between text-[12px] text-[var(--muted)]">
+                          <div className="mb-1 flex justify-between gap-2 text-[12px] text-[var(--muted)]">
                             <span>{tradeoff.aspect.label}</span>
                             <span>{tradeoff.raw.toFixed(1)} x {tradeoff.weight}</span>
                           </div>
