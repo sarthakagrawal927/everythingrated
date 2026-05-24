@@ -11,6 +11,19 @@ export function ItemCard({
   data: ItemWithAggregate;
   directorySlug: string;
 }) {
+  const yourRated = data.aspects.filter((a) => a.yourScore !== null);
+  const yourMean =
+    yourRated.length > 0
+      ? yourRated.reduce((s, a) => s + (a.yourScore ?? 0), 0) / yourRated.length
+      : null;
+  const allRated =
+    data.aspects.length > 0 && yourRated.length === data.aspects.length;
+  const ctaLabel = yourMean === null
+    ? "Rate this →"
+    : allRated
+      ? "Review →"
+      : "Finish rating →";
+
   return (
     <Link href={`/d/${directorySlug}/${data.item.slug}`} className="group block">
       <Card className="h-full transition-colors group-hover:border-[var(--border-strong)]">
@@ -40,10 +53,24 @@ export function ItemCard({
             ))}
           </div>
 
-          <div className="flex items-center justify-between">
-            <Badge tone="neutral">{data.totalRaters} rater{data.totalRaters === 1 ? "" : "s"}</Badge>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Badge tone="neutral">{data.totalRaters} rater{data.totalRaters === 1 ? "" : "s"}</Badge>
+              {yourMean !== null ? (
+                <Badge tone={allRated ? "strong" : "outline"}>
+                  You:{" "}
+                  <span className="num tabular-nums">{yourMean.toFixed(1)}</span>
+                  {!allRated ? (
+                    <span className="text-[var(--muted)]">
+                      {" "}
+                      ({yourRated.length}/{data.aspects.length})
+                    </span>
+                  ) : null}
+                </Badge>
+              ) : null}
+            </div>
             <span className="text-[12px] text-[var(--muted)] group-hover:text-[var(--foreground)]">
-              Rate this →
+              {ctaLabel}
             </span>
           </div>
         </CardBody>

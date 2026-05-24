@@ -17,6 +17,14 @@ export default async function ItemPage({
   const result = await getItemAggregate(dirSlug, itemSlug, visitorId);
   if (!result) notFound();
   const { directory, data } = result;
+  const yourRatedAspects = data.aspects.filter((a) => a.yourScore !== null);
+  const yourMean =
+    yourRatedAspects.length > 0
+      ? yourRatedAspects.reduce((s, a) => s + (a.yourScore ?? 0), 0) /
+        yourRatedAspects.length
+      : null;
+  const allRated =
+    data.aspects.length > 0 && yourRatedAspects.length === data.aspects.length;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-14">
@@ -63,9 +71,26 @@ export default async function ItemPage({
       </header>
 
       <section className="mt-8">
-        <h2 className="text-[12px] uppercase tracking-[0.1em] text-[var(--muted)]">
-          Rate across aspects
-        </h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h2 className="text-[12px] uppercase tracking-[0.1em] text-[var(--muted)]">
+            Rate across aspects
+          </h2>
+          <div className="flex items-center gap-2 text-[12px] text-[var(--muted)]">
+            <span aria-live="polite">
+              You: {yourRatedAspects.length} / {data.aspects.length} rated
+              {yourMean !== null ? (
+                <>
+                  {" "}
+                  · avg{" "}
+                  <span className="num tabular-nums text-[var(--foreground)]">
+                    {yourMean.toFixed(1)}
+                  </span>
+                </>
+              ) : null}
+            </span>
+            {allRated ? <Badge tone="strong">Complete</Badge> : null}
+          </div>
+        </div>
         <p className="mt-1 text-[12px] text-[var(--muted-2)]">
           One rating per aspect per visitor — change anytime, your latest counts.
         </p>
