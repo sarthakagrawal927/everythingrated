@@ -12,6 +12,9 @@ export function SiteHeader() {
           <span>EverythingRated</span>
         </Link>
         <nav className="flex items-center gap-4 text-[12px] text-[var(--muted)]">
+          <Link href="/my" className="hover:text-[var(--foreground)]">
+            My ratings
+          </Link>
           <Link href="/submit-directory" className="hover:text-[var(--foreground)]">
             Submit directory
           </Link>

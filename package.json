@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
-    "test": "tsx apps/web/src/lib/comparison.test.ts && tsx apps/web/src/lib/directory-submissions.test.ts",
+    "test": "tsx apps/web/src/lib/comparison.test.ts && tsx apps/web/src/lib/directory-submissions.test.ts && tsx apps/web/src/lib/collections.test.ts",
     "cf:build": "pnpm --filter web cf:build",
     "deploy": "pnpm --filter web run deploy",
     "start": "pnpm --filter web start",

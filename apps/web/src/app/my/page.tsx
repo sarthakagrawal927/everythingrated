@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Card, CardBody } from "@/components/atoms/card";
+import { RankedCollectionsPanel } from "@/components/organisms/ranked-collections-panel";
+import type { RatedItemRef } from "@/lib/collections";
 import { listItemsRatedByVisitor } from "@/lib/ratings";
 import { readVisitorId } from "@/lib/visitor";
 
@@ -31,6 +33,14 @@ export default async function MyRatingsPage() {
   }
 
   const items = await listItemsRatedByVisitor(visitorId);
+  const ratedItems: RatedItemRef[] = items.map((entry) => ({
+    itemId: entry.item.id,
+    itemName: entry.item.name,
+    itemSlug: entry.item.slug,
+    directorySlug: entry.directory.slug,
+    directoryName: entry.directory.name,
+    yourMean: entry.yourMean,
+  }));
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
@@ -91,6 +101,8 @@ export default async function MyRatingsPage() {
           </CardBody>
         </Card>
       )}
+
+      <RankedCollectionsPanel ratedItems={ratedItems} />
     </main>
   );
 }
