@@ -20,6 +20,7 @@ out/
 
 # tmp
 .tmp/
+.symphony/workspaces/
 
 # test
 coverage/
