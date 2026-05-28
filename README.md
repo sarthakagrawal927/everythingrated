@@ -37,7 +37,7 @@ multi-axis UX can be tested before adding accounts, submissions, or moderation.
 | Database | Cloudflare D1 (`everythingrated-db`) — Drizzle ORM |
 | Auth | None — ratings are anonymous, scoped to an httpOnly `er_visitor` cookie |
 | Rate limiting | Cloudflare Workers rate limiter binding (`RATE_LIMITER`) |
-| Analytics | PostHog (`@saas-maker/posthog-client`) |
+| Analytics | PostHog (`local posthog-js wrapper`) |
 | CI/CD | GitHub Actions — auto-deploy to Cloudflare Workers on push to `main` |
 
 ## Local Development

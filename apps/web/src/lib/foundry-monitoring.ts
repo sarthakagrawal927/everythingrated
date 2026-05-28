@@ -1,6 +1,6 @@
 "use client";
 
-import { track } from "@saas-maker/posthog-client";
+import posthog from "posthog-js";
 
 const PROJECT_SLUG = "everythingrated";
 
@@ -28,7 +28,7 @@ export function captureError(
 ) {
   try {
     const payload = {
-      project_slug: PROJECT_SLUG,
+      project_id: PROJECT_SLUG,
       route: route(),
       scope: options.scope ?? "unknown",
       digest: options.digest,
@@ -36,8 +36,8 @@ export function captureError(
       message: messageFrom(error),
       stack: error instanceof Error ? error.stack : undefined,
     };
-    track("error_captured", payload);
-    track("foundry_page_crash", payload);
+    posthog.capture("error_captured", payload);
+    posthog.capture("foundry_page_crash", payload);
   } catch {
     // Never let monitoring throw inside an error boundary.
   }
@@ -52,8 +52,8 @@ export function captureActionFailure(
   options: { action: string; source?: string } = { action: "unknown" },
 ) {
   try {
-    track("action_failed", {
-      project_slug: PROJECT_SLUG,
+    posthog.capture("action_failed", {
+      project_id: PROJECT_SLUG,
       route: route(),
       action: options.action,
       source: options.source ?? "client",

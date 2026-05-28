@@ -6,9 +6,9 @@
  * cross-fleet funnel (signup -> activated -> core_action) and a D1/D7 retention
  * insight, with no custom dashboard.
  *
- * Every event carries `project: "everythingrated"`. This wrapper is
+ * Every event carries `project_id: "everythingrated"`. This wrapper is
  * intentionally thin so it can later be promoted into
- * `@saas-maker/posthog-client`.
+ * `posthog-js`.
  *
  * everythingrated has NO auth — ratings are anonymous, identified by the
  * `er_visitor` cookie. The taxonomy maps onto that model:
@@ -17,7 +17,7 @@
  *  - `core_action` — each rating submitted (`rating_submitted`).
  *  - `returned`    — a session by a visitor who already has a cookie + activity.
  *
- * It is isomorphic: in the browser it routes through `@saas-maker/posthog-client`
+ * It is isomorphic: in the browser it routes through `posthog-js`
  * (`track`); inside a server action it posts directly to the PostHog capture
  * API via a raw fetch (no `posthog-node`).
  *
@@ -40,13 +40,13 @@ export type CoreAction =
 
 interface AnalyticsEventMap {
   /** First identified visit — the `er_visitor` cookie was minted. */
-  signup: { project: typeof PROJECT };
+  signup: { project_id: typeof PROJECT };
   /** The visitor reaches first real value — their first submitted rating. */
-  activated: { project: typeof PROJECT };
+  activated: { project_id: typeof PROJECT };
   /** The thing the product exists to do. */
-  core_action: { project: typeof PROJECT; action: CoreAction };
+  core_action: { project_id: typeof PROJECT; action: CoreAction };
   /** A return session by a visitor with prior activity. */
-  returned: { project: typeof PROJECT };
+  returned: { project_id: typeof PROJECT };
 }
 
 function emitServer(
@@ -72,21 +72,21 @@ function emitServer(
 function emitBrowser(event: string, payload: Record<string, unknown>): void {
   // Dynamically import the browser PostHog client so `posthog-js` is never
   // pulled into a server bundle. Fire-and-forget; never throws upward.
-  void import("@saas-maker/posthog-client")
-    .then(({ track }) => {
-      track(event as never, payload as never);
+  void import("posthog-js")
+    .then(({ default: posthog }) => {
+      posthog.capture(event, payload);
     })
     .catch(() => {
       // Swallow — analytics must never break a user flow.
     });
 }
 
-function emit<K extends keyof AnalyticsEventMap>(
-  event: K,
-  props: Omit<AnalyticsEventMap[K], "project">,
+export function trackEvent(
+  event: string,
+  properties: Record<string, unknown> = {},
   distinctId?: string,
 ): void {
-  const payload = { project: PROJECT, ...props };
+  const payload = { project_id: PROJECT, ...properties };
   try {
     if (typeof window === "undefined") {
       emitServer(event, payload, distinctId);
@@ -96,6 +96,14 @@ function emit<K extends keyof AnalyticsEventMap>(
   } catch {
     // Analytics must NEVER break a user flow. Swallow and move on.
   }
+}
+
+function emit<K extends keyof AnalyticsEventMap>(
+  event: K,
+  props: Omit<AnalyticsEventMap[K], "project_id">,
+  distinctId?: string,
+): void {
+  trackEvent(event, props, distinctId);
 }
 
 /**
@@ -136,7 +144,7 @@ export function trackCompareViewOpened({
   if (typeof window === "undefined") return;
   try {
     emitBrowser("compare_view_opened", {
-      project: PROJECT,
+      project_id: PROJECT,
       directory,
       item_count: itemCount,
     });

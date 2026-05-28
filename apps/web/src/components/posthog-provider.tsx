@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 
-import { PostHogProvider } from "@saas-maker/posthog-client";
+import posthog from "posthog-js";
+import { PostHogProvider } from "posthog-js/react";
 
 import { trackReturnedOnce } from "@/lib/analytics";
 
@@ -22,7 +23,7 @@ function AnalyticsTracker() {
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   return (
-    <PostHogProvider>
+    <PostHogProvider client={posthog}>
       <AnalyticsTracker />
       {children}
     </PostHogProvider>
